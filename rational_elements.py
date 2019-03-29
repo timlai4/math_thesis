@@ -24,3 +24,11 @@ def check_rationality(a,b,k,R = [1]): # R is a list storing generators
         else:
             return "Bad"
   return "Good"
+
+# Sample inputs:
+check_rationality(0,1,3,[-1])
+# Returns: 'Good', as expected
+check_rationality(4,11,12,[5,7])
+# Returns: 'Good'
+check_rationality(4,9,12,[5,7])
+# Returns: 'Bad', as expected, since it was not on the tensor square list. 
