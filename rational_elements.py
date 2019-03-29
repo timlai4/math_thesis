@@ -20,9 +20,9 @@ def check_rationality(a,b,k,R = [1]): # R is a list storing generators
       for r in R:
         r_inv = [(r*x)%k for x in inv]
         if compare(inv,r_inv):
-            continue
+          continue
         else:
-            return "Bad"
+          return "Bad"
   return "Good"
 
 # Sample inputs:
