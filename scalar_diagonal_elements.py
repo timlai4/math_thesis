@@ -29,7 +29,9 @@ generators = {3: [2], 4: [3], 5: [2], 6: [5], 7: [3], 8: [3,5], 9: [2], 10: [3],
               17: [3], 18: [5], 19: [2], 20: [3,19], 21: [2,20], 22: [7], 
               23: [5], 24: [5,7,13], 25: [2], 26: [7], 27: [2], 28: [3,13],
               29: [2], 30: [7,11], 31: [3], 32: [3,31], 33: [2,10], 34: [3], 
-              35: [2,6], 36: [5,19]}
+              35: [2,6], 36: [5,19], 42: [5, 13], 48: [5, 7, 47], 54: [5],
+              63: [2, 5], 72: [5, 7, 19], 84: [5, 11, 13], 108: [5, 107],
+              126: [5, 13]}
 # Consider the scalar embedding case.
 # Classify all rational elements of the form 
 #(\zeta_n^a, \zeta_n^b, \zeta_n^{-a-b}).
@@ -96,7 +98,25 @@ for n in base:
 empty_keys = [k for k,v in C.items() if len(v) == 0]
 for k in empty_keys:
     del C[k]
-
 # Analyze AF
-
+D = {}
+for n in C:
+    for d in range(1, 4):
+        k = 2*d*n
+        R = generators[k]
+        D[(n, d)] = []
+        for a, b, in C[n]:
+            for r in range(d):
+                x = 6*n*r + 2*a*d - 2*b*d - d*n
+                y = 6*n*r + 4*a*d - d*n + 2*b*d
+                z = 4*b*d + 2*a*d
+                inv = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
+                flag = True
+                for gen in R:
+                    r_inv = [(gen*w) for w in inv]
+                    if not compare(inv, r_inv):
+                        flag = False
+                        break
+                if flag:
+                    D[(n, d)].append([a, b, r])
 
