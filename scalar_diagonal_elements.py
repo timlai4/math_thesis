@@ -11,7 +11,7 @@ to find the possible subgroups in the scalar embedding case.
 import collections
 import json
 from functools import reduce
-from itertools import product
+from itertools import product, groupby
 
 def compare(list1,list2):
     return collections.Counter(list1) == collections.Counter(list2)
@@ -71,7 +71,6 @@ for k in generators:
                     break                        
             if flag:
                 base[str(k)].append([a,b]) 
-write = False # Whether to write outputs to scalar_C.txt
 C = {}
 for n in base:
     n = int(n)
@@ -86,19 +85,31 @@ for n in base:
                     break
         if flag:
             solutions.append(pair)  
-    if write:
-        file = open("C_grps.txt","a")
-        file.write(str(n) + '\n')
-        json.dump(solutions,file)
-        file.write('\n')
-        file.close()
     C[n] = solutions
 
-# Bootstrap classification of C to D. 
-# First, remove the empty values from C. 
+
+# Remove the empty values from C. 
 empty_keys = [k for k,v in C.items() if len(v) == 0]
 for k in empty_keys:
     del C[k]
+
+# Not all the values in C are distinct
+
+C_perm = {}
+for n in C:
+    temp = [sorted([a, b, (n - a - b)%n]) for a, b in C[n]]
+    temp.sort()
+    temp2 = [[x[0], x[1]] for x in temp]
+    C_perm[n] = list(temp2 for temp2,_ in groupby(temp2))
+
+C = C_perm
+file = open("C_grps.txt","a")
+file.write(str(n) + '\n')
+json.dump(solutions,file)
+file.write('\n')
+file.close()
+'''    
+# Bootstrap classification of C to D. 
 # Analyze AF
 AF = {}
 for n in C:
@@ -247,4 +258,4 @@ for n, d in AF_final:
 #         if flag:
 #             AFG[(n, d)].append([a, b, r])
 
-            
+'''        
