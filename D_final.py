@@ -42,7 +42,7 @@ generators = {1: [1], 2: [1], 3: [2], 4: [3], 5: [2], 6: [5], 7: [3], 8: [3,5],
               48: [5, 7, 47], 54: [5], 56: [3, 13, 29], 63: [2, 5], 72: [5, 7, 19], 
               84: [5, 11, 13], 96: [5, 7, 31], 108: [5, 107], 126: [5, 13]}
 
-k = 2*d*n
+k = 4*d*n
 R = generators[k]
 
 for [a, b, r, s] in D:
@@ -57,36 +57,34 @@ for [a, b, r, s] in D:
             delta_two = (d-2*r)*n*deltas[0] + (d-2*r-s)*n*deltas[1] + 4*n*r*deltas[2] + (8*r+4*s)*n*deltas[3]
             delta_three = (d-2*r)*n*deltas[0] + (d-2*r-s)*n*deltas[1]+ (d-2*r)*n*deltas[2] + (d-2*r-s)*n*deltas[3]
 
+            A = eta_one + delta_one
+            B = eta_two + delta_two
+            C = eta_three + delta_three
+
+            x = 2*d*n + A - (d*n - A)
+            y = 2*d*n + A - (3*d*n  - A)
+            z = d*n - A  - (3*d*n - A)
+            inv1 = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
+            x = d*n - B - (2*d*n + B)
+            y = d*n - B - (3*d*n - B)
+            z = 2*d*n + B - (3*d*n - B)
+            inv2 = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
+            x = d*n - C - (3*d*n - C)
+            y = d*n - C - (2*d*n + C)
+            z = 3*d*n - C - (2*d*n + C)
+            inv3 = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
+            for gen in R:
+                r_inv1 = [(gen*w)%k for w in inv1]
+                r_inv2 = [(gen*w)%k for w in inv2]
+                r_inv3 = [(gen*w)%k for w in inv3]
+                if not (compare(inv1, r_inv1) and compare(inv2, r_inv2) and compare(inv3, r_inv3)):
+                    flag = False
+                    break
                 
             A = eta_one + delta_one
             B = eta_two + delta_two
             C = eta_three + delta_three                
-                    
-            x = 2*A - (B + C)
-            y = 2*A - (2*d*n + B + C)
-            z = B + C  - (2*d*n + B + C)
-            inv = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
-            for gen in R:
-                r_inv = [(gen*w)%k for w in inv]
-                if not compare(inv, r_inv):
-                    flag = False
-                    break        
-            x = A + B - (2*d*n + A + B) 
-            y = A + B - 2*C
-            z = 2*n*d + A + B - 2*C
-            for gen in R:
-                r_inv = [(gen*w)%k for w in inv]
-                if not compare(inv, r_inv):
-                    flag = False
-                    break 
-            x = A + C - 2*B
-            y  = A + C - (2*n*d + A + C)
-            z = 2*B - (2*n*d + A + C)
-            for gen in R:
-                r_inv = [(gen*w)%k for w in inv]
-                if not compare(inv, r_inv):
-                    flag = False
-                    break                 
+                              
     if flag:
         D_final["(" + str(n) + "," + str(d) + ")"].append([a, b, r, s])
         
