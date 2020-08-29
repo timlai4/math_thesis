@@ -103,12 +103,13 @@ for n in C:
     C_perm[n] = list(temp2 for temp2,_ in groupby(temp2))
 
 C = C_perm
-file = open("C_grps.txt","a")
-file.write(str(n) + '\n')
-json.dump(solutions,file)
-file.write('\n')
-file.close()
-'''    
+for n in C:
+    file = open("C_grps.txt","a")
+    file.write(str(n) + '\n')
+    json.dump(C[n],file)
+    file.write('\n')
+    file.close()
+  
 # Bootstrap classification of C to D. 
 # Analyze AF
 AF = {}
@@ -188,74 +189,4 @@ for n, d in AF_final:
                         flag = False
                         break        
         if flag:
-            D_diag[(n, d)].append([a, b, r, s])
-
-
-                
-                
-# G = {}
-# empty_keys = [k for k,v in AF_final.items() if len(v) == 0]
-# for k in empty_keys:
-#     del AF_final[k] 
-# for n, d in AF_final:
-#     k = 2*d*n
-#     R = generators[k]
-#     G[(n, d)] = []
-#     for a, b, r in AF_final[(n, d)]:
-#         flag = True
-#         for f in range(n):
-#             for g in range(d):
-#                 for s in range(d):
-#                     x = 6*n*r*g + 2*a*d*f*g - 2*n*(2*r+s) - d*n*g + 2*a*d*f + 2*b*d*f
-#                     y = 6*n*r*g + 2*a*d*f*g + 2*n*(2*r+s) - d*n*g - 2*b*d*f
-#                     z = 4*n*(2*r+s) - 2*a*d*f - 4*b*d*f
-#                     inv = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
-#                     for gen in R:
-#                         r_inv = [(gen*w) for w in inv]
-#                         if not compare(inv, r_inv):
-#                             flag = False
-#                             break
-#         if flag:
-#             G[(n, d)]. append([a, b, r, s])
-# AG'
-# AG = {}
-# for d in range(1, 4):
-#     k = 2*d
-#     R = generators[k]
-#     AG[d] = []
-#     for r in range(d):
-#         x = 6*r - d
-#         y = 6*r - 2*d
-#         inv = [(x)%k, (-x)%k, (y)%k, (-y)%k, (d)%k, (-d)%k]
-#         flag = True
-#         for gen in R:
-#             r_inv = [(gen*w)%k for w in inv]
-#             if not compare(inv,r_inv):
-#                 flag = False
-#                 break
-#         if flag:
-#             AG[d].append(r) 
-            
-# AFG = {}
-# empty_keys = [k for k,v in AF_final.items() if len(v) == 0]
-# for k in empty_keys:
-#     del AF_final[k] 
-# for n, d in AF_final:
-#     k = 4*d*n
-#     R = generators[k]
-#     AFG[(n, d)] = []
-#     for a, b, r in AF_final[(n, d)]:
-#         flag = True
-#         x = 6*n*r + 2*a*d
-#         y = 6*n*r - 2*n*d + 2*a*d
-#         z = -2*n*d
-#         inv = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
-#         for gen in R:
-#             r_inv = [(gen*w)%k for w in inv]
-#             if not compare(inv, r_inv):
-#                 flag = False
-#                 break
-#         if flag:
-#             AFG[(n, d)].append([a, b, r])
-
-'''        
+            D_diag[(n, d)].append([a, b, r, s])       
