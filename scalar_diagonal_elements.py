@@ -114,7 +114,7 @@ for n in C:
 # Analyze AF
 AF = {}
 for n in C:
-    for d in range(1, 4):
+    for d in range(2, 4):
         k = 2*d*n
         R = generators[k]
         AF[(n, d)] = []
@@ -167,6 +167,10 @@ for n, d in AF_final:
     R = generators[k]
     D_diag[(n, d)] = []
     for [a, b, r], s in product(AF_final[(n, d)], range(d)):
+        # Exclude the case when both r and s are 0. 
+        # This would be the case of C.
+        if r == 0 and s == 0: 
+            continue
         flag = True
         for etas in product(range(n), repeat = 4):
             for deltas in product(range(d), repeat = 4):
@@ -185,7 +189,7 @@ for n, d in AF_final:
                 inv = [(x)%k, (-x)%k, (y)%k, (-y)%k, (z)%k, (-z)%k]
                 for gen in R:
                     r_inv = [(gen*w)%k for w in inv]
-                    if not compare(inv, r_inv):
+                    if not compare(inv, r_inv): 
                         flag = False
                         break        
         if flag:
