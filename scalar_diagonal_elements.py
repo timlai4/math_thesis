@@ -10,6 +10,7 @@ to find the possible subgroups in the scalar embedding case.
 
 import collections
 import json
+import pickle
 from functools import reduce
 from itertools import product, groupby
 
@@ -32,7 +33,18 @@ generators = {1: [1], 2: [1], 3: [2], 4: [3], 5: [2], 6: [5], 7: [3], 8: [3,5],
               27: [2], 28: [3,13], 29: [2], 30: [7,11], 31: [3], 32: [3,31], 
               33: [2,10], 34: [3], 35: [2,6], 36: [5,19], 42: [5, 13], 
               48: [5, 7, 47], 54: [5], 56: [3, 13, 29], 63: [2, 5], 72: [5, 7, 19], 
-              84: [5, 11, 13], 96: [5, 7, 31], 108: [5, 107], 126: [5, 13]}
+              84: [5, 11, 13], 96: [5, 7, 31], 108: [5, 107], 126: [5, 13],
+              144: [5, 7, 13], 162: [5], 216: [5, 7, 13], 252: [5, 11, 13], 
+              288: [5, 7, 13], 324: [5, 7], 378: [5, 11, 13], 432: [5, 11, 13], 
+              504: [5, 11, 13, 17], 648: [5, 7, 13], 756: [5, 11, 13], 
+              40: [3, 11, 39], 60: [7, 11, 19], 64: [3, 63], 90: [7, 11],
+              80: [3, 7, 79], 112: [3, 5, 111], 120: [7, 11, 19, 29], 
+              128: [3, 127], 168: [5, 11, 13, 17], 180: [7, 11, 13], 
+              192: [5, 7, 13], 140: [3, 11, 19], 196: [3, 5], 210: [11, 13, 19],
+              224: [3, 5, 11], 270: [7, 11], 240: [7, 11, 13, 17], 
+              336: [5, 11, 13, 17], 360: [7, 11, 13, 17], 384: [5, 7, 13],
+              540: [7, 11, 13], 576: [5, 7, 13], 420: [11, 13, 17, 19],
+              588: [5, 11, 13], 630: [11, 13, 19], 672: [5, 11, 13, 17]}
 # Consider the scalar embedding case.
 # Classify all rational elements of the form 
 #(\zeta_n^a, \zeta_n^b, \zeta_n^{-a-b}).
@@ -109,12 +121,37 @@ for n in C:
     json.dump(C[n],file)
     file.write('\n')
     file.close()
-  
+
+# Case D
+
+# First, analyze A
+A = {}
+for d in range(4, 19):
+    A[d] = []
+    for r in range(1, d):
+        if gcd(d, r) > 1:
+            continue
+        k = 2*d
+        G = generators[k]
+        inv = [(6*r - d) % k, -(6*r - d) % k]
+        count = 0
+        for g in G:
+            r_inv = [(g*x)%k for x in inv]
+            if compare(inv,r_inv):
+                count += 1
+        if count==len(G):
+            A[d].append(r)
+
+empty_keys = [k for k,v in A.items() if len(v) == 0]
+for k in empty_keys:
+    del A[k]
+            
+
 # Bootstrap classification of C to D. 
 # Analyze AF
 AF = {}
 for n in C:
-    for d in range(2, 4):
+    for d in A:
         k = 2*d*n
         R = generators[k]
         AF[(n, d)] = []
@@ -169,7 +206,7 @@ for n, d in AF_final:
     for [a, b, r], s in product(AF_final[(n, d)], range(d)):
         # Exclude the case when both r and s are 0. 
         # This would be the case of C.
-        if r == 0 and s == 0: 
+        if gcd_vec(r, 2*r, 2*r+s) != 1: 
             continue
         flag = True
         for etas in product(range(n), repeat = 4):
@@ -193,4 +230,9 @@ for n, d in AF_final:
                         flag = False
                         break        
         if flag:
-            D_diag[(n, d)].append([a, b, r, s])       
+            D_diag[(n, d)].append([a, b, r, s])   
+empty_keys = [k for k,v in D_diag.items() if len(v) == 0]
+for k in empty_keys:
+    del D_diag[k]
+with open('D_diag.pickle', 'wb') as f:
+    pickle.dump(D_diag, f)
