@@ -1,5 +1,7 @@
 # Math
 
+This repository hosts the scripts used in my dissertation, titled "Classification of Sato-Tate Subgroups of U(3)" defended and approved on April 26, 2021, in satisfaction of the requirements for my Ph.D. degree at Indiana University, Bloomington, awarded on May 7, 2021. 
+
 ## Overview of scripts
 
 In the paper, there are several places where a computer search for rational elements was used. There were instances in both the case when the Hodge circle was of the first type and of the second type (scalar embedding). 
